@@ -35,7 +35,7 @@ def most_similar_perfumes(scents, base_notes, middle_notes, typ, min_price, max_
     base_note_sim = cosine_similarity_cal('base_note', filtered_data, base_notes)
     middle_note_sim = cosine_similarity_cal('middle_note', filtered_data, middle_notes)
     
-    similarity = (scent_sim + base_note_sim + middle_note_sim) / 3
+    similarity = (scent_sim + base_note_sim + middle_note_sim + 2) / 5 # +2 are values of type of perfumes and price
 
     data = filtered_data.copy()
     data['cosine_scent'] = scent_sim
@@ -46,7 +46,7 @@ def most_similar_perfumes(scents, base_notes, middle_notes, typ, min_price, max_
     top_similar_perfumes = data.sort_values(by = 'cosine_similarity', ascending = False).head(top_n)
     top_similar_perfumes['price_THB'] = top_similar_perfumes['price_THB'].astype(int)
 
-    return top_similar_perfumes[['name', 'brand', 'department', 'price_THB', 'ml','cosine_similarity', 'img_url']]
+    return top_similar_perfumes[['name', 'brand', 'department', 'price_THB', 'ml', 'item_rating', 'cosine_similarity', 'img_url']]
 
 def get_heatmap():
     departments = ['Men', 'Women', 'Unisex', 'All']
