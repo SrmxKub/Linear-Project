@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from backend import most_similar_perfumes
@@ -31,6 +31,7 @@ class Perfume(BaseModel):
 
 @app.post("/similar-perfumes")
 def similar_perfumes(data: Perfume):
+    
     data.base = ", ".join(data.base)
     data.middle = ", ".join(data.middle)
     result = most_similar_perfumes(data.scents, data.base, data.middle, data.typ, data.min_price, data.max_price, data.top_n)

@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-file_path = 'https://raw.githubusercontent.com/SrmxKub/Linear-Project/refs/heads/main/perfumes_data.csv'
+file_path = 'https://raw.githubusercontent.com/SrmxKub/Linear-Project/refs/heads/main/perfumes_data_final.csv'
 df = pd.read_csv(file_path)
 df['num_seller_ratings'] = df['num_seller_ratings'].apply(
     lambda x: float(x.replace('K', '')) * 1000 if isinstance(x, str) and 'K' in x else float(x)
@@ -20,13 +20,6 @@ def cosine_similarity_cal(feature, filtered_data, input_value):
     tfidf_matrix = TfidfVectorizer().fit_transform(combined_df[feature])
 
     return cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1]).flatten()
-
-
-# scents = "Woody"
-# base_notes = "Oakmoss, Patchouli, Vetiver"
-# middle_notes = "Jasmine, Hazelnut, Cashmirwood, Honey"
-# department = "Men"  # Filter
-
 
 def most_similar_perfumes(scents, base_notes, middle_notes, typ, min_price, max_price, top_n = 10):
     
@@ -53,7 +46,7 @@ def most_similar_perfumes(scents, base_notes, middle_notes, typ, min_price, max_
     top_similar_perfumes = data.sort_values(by = 'cosine_similarity', ascending = False).head(top_n)
     top_similar_perfumes['price_THB'] = top_similar_perfumes['price_THB'].astype(int)
 
-    return top_similar_perfumes[['name', 'brand', 'department', 'price_THB', 'cosine_similarity']]
+    return top_similar_perfumes[['name', 'brand', 'department', 'price_THB', 'ml','cosine_similarity', 'img_url']]
 
 def get_heatmap():
     departments = ['Men', 'Women', 'Unisex', 'All']
@@ -66,12 +59,12 @@ def get_heatmap():
         
         correlation_matrix = filtered_data[['old_price', 'new_price', 'ml', 'item_rating', 'seller_rating', 'num_seller_ratings']].corr()
 
-        plt.figure(figsize = (14, 8))
+        plt.figure(figsize = (16, 7),)
         sns.heatmap(correlation_matrix, annot = True, cmap = 'coolwarm', fmt = ".2f", annot_kws = {"size": 14})
-        plt.tight_layout(rect = [0, 0, 1, 1], pad = 5)
-        plt.xticks(fontsize = 11)
-        plt.yticks(fontsize = 11)
-        plt.title(f'Corretions Martrix of {department} Perfumes', fontsize=20)
+        plt.xticks(fontsize = 12)
+        plt.yticks(fontsize = 12)
+        plt.title(f'Correlations Martrix of {department} Perfumes', fontsize=20, fontweight='bold')
+        plt.subplots_adjust(left=0.21)
         plt.savefig(f'img/{department}_heatmap.png')
 
 
